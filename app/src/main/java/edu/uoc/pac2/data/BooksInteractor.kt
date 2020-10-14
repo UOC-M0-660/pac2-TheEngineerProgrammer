@@ -1,5 +1,7 @@
 package edu.uoc.pac2.data
 
+import android.database.sqlite.SQLiteConstraintException
+
 /**
  * This class Interacts with {@param bookDao} to perform operations in the local database.
  *
@@ -10,22 +12,25 @@ package edu.uoc.pac2.data
  */
 class BooksInteractor(private val bookDao: BookDao) {
 
-    // TODO: Get All Books from DAO
+    // No veo nada que cambiar
     fun getAllBooks(): List<Book> {
         return bookDao.getAllBooks()
     }
 
-    // TODO: Save Book
+    // He añadido que en caso de que ya existe el libro, lo va a actualizar en vez de insertar
     fun saveBook(book: Book) {
-        bookDao.saveBook(book)
+        try {
+            bookDao.saveBook(book)
+        }catch (e: SQLiteConstraintException){
+            bookDao.updateBook(book)
+        }
     }
 
-    // TODO: Save List of Books
     fun saveBooks(books: List<Book>) {
         books.forEach { saveBook(it) }
     }
 
-    // TODO: Get Book by id
+    // No veo nada que cambiar
     fun getBookById(id: Int): Book? {
         return bookDao.getBookById(id)
     }

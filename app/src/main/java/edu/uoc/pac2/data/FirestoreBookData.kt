@@ -11,6 +11,7 @@ import com.google.firebase.ktx.Firebase
 object FirestoreBookData {
 
     private const val TAG = "FirestoreBookData"
+    const val COLLECTION_BOOKS = "books" //añado aqui el nombre de collección para poder usarlos en otras partes
 
     /// Adds example books to Firestore
     fun addBooksDataToFirestoreDatabase() {
@@ -20,7 +21,7 @@ object FirestoreBookData {
         // Insert each book to Firestore
         booksData.forEach { bookMap ->
             firestoreDatabase
-                    .collection("books")
+                    .collection(COLLECTION_BOOKS)
                     .document(bookMap["uid"].toString())
                     .set(bookMap)
                     .addOnSuccessListener {

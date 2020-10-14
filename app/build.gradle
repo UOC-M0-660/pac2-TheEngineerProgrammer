@@ -48,7 +48,9 @@ dependencies {
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    // TODO: Add Room
+    // Room
+    implementation "androidx.room:room-runtime:2.2.5"
+    kapt "androidx.room:room-compiler:2.2.5"
     // TODO: Add Image Loading Library
     // Other Libraries
 }
