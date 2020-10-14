@@ -62,7 +62,8 @@ class MyApplication : Application() {
         val networkCapabilities = cm.getNetworkCapabilities(cm.activeNetwork)
         networkCapabilities?.run {
             isConnected = hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-            //compruebo si estan conectados o con wifi o con internet movil
+                    || hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+            //compruebo si estan conectados con wifi o con internet movil o con ethernet
         }
         return isConnected
     }

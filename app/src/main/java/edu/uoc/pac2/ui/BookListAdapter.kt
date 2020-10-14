@@ -1,6 +1,7 @@
 package edu.uoc.pac2.ui
 
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class BooksListAdapter(private var books: List<Book>) : RecyclerView.Adapter<Boo
 
     private val evenViewType = 0
     private val oddViewType = 1
+    private lateinit var context: Context
 
     private fun getBook(position: Int): Book {
         return books[position]
@@ -39,6 +41,7 @@ class BooksListAdapter(private var books: List<Book>) : RecyclerView.Adapter<Boo
 
     // Creates View Holder for re-use
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent.context
         val view: View = when (viewType) {
             evenViewType -> {
                 LayoutInflater.from(parent.context)
@@ -61,7 +64,12 @@ class BooksListAdapter(private var books: List<Book>) : RecyclerView.Adapter<Boo
         holder.titleView.text = book.title
         holder.authorView.text = book.author
 
-        // TODO: Set View Click Listener
+        holder.view.setOnClickListener {
+            val i = Intent(context, BookDetailActivity::class.java)
+            i.putExtra(BookDetailFragment.ARG_ITEM_ID, book.uid)
+            context.startActivity(i)
+            (context as BookListActivity).overridePendingTransition(R.anim.translate_in_bottom, R.anim.translate_out_bottom)
+        }
     }
 
     // Returns total items in Adapter

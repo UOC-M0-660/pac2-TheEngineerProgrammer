@@ -28,7 +28,6 @@ class BookListActivity : AppCompatActivity() {
     private val db = Firebase.firestore
 
     private lateinit var adapter: BooksListAdapter
-    private var books = mutableListOf<Book>()
 
     private val myApplication by lazy { application as MyApplication }
 
@@ -62,7 +61,7 @@ class BookListActivity : AppCompatActivity() {
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         // Init Adapter
-        adapter = BooksListAdapter(books)
+        adapter = BooksListAdapter(emptyList())
         recyclerView.adapter = adapter
     }
 
@@ -79,18 +78,16 @@ class BookListActivity : AppCompatActivity() {
     //No necesitamos estar continuamente escuchando para actualizar los cambios a tiempo real.
     private fun getBooksFromFirestoreAndSaveToLocalDb(){
         db.collection(FirestoreBookData.COLLECTION_BOOKS).get().addOnSuccessListener {snapShot ->
-            books.clear() //lo vacio primero
-            val onlineBooks = snapShot.documents.mapNotNull { it.toObject(Book::class.java) }
-            books.addAll(onlineBooks) //recogemos los libros
-            adapter.notifyDataSetChanged()//Notificamos al adaptador del recyclerview
-            saveBooksToLocalDatabase(onlineBooks) //guardamos al bd local
+            val books = snapShot.documents.mapNotNull { it.toObject(Book::class.java) }
+            adapter.setBooks(books)
+            saveBooksToLocalDatabase(books) //guardamos al bd local
         }
     }
 
     // cargar libros desde la base de datos local
     private fun loadBooksFromLocalDb() {
-        books.clear()//lo vacio primero
-        books.addAll(myApplication.getBooksInteractor().getAllBooks())
+        val books = myApplication.getBooksInteractor().getAllBooks()
+        adapter.setBooks(books)
     }
 
     // guardar libros al base de datos local

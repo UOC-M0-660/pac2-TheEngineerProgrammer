@@ -1,18 +1,29 @@
 package edu.uoc.pac2.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
+import edu.uoc.pac2.MyApplication
 import edu.uoc.pac2.R
 import edu.uoc.pac2.data.Book
+import kotlinx.android.synthetic.main.fragment_book_detail.*
+import kotlin.concurrent.thread
 
 /**
  * A fragment representing a single Book detail screen.
  * This fragment is contained in a [BookDetailActivity].
  */
 class BookDetailFragment : Fragment() {
+
+    private val myApplication by lazy { activity!!.application as MyApplication}
+    private val myActivity by lazy { activity!! as BookDetailActivity }
+    private var uid = 0
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -23,20 +34,39 @@ class BookDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Get Book for this detail screen
         loadBook()
+        myActivity.setSupportActionBar(toolbar)
+        myActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     }
 
 
-    // TODO: Get Book for the given {@param ARG_ITEM_ID} Book id
+    // cargar libro con id
     private fun loadBook() {
-        throw NotImplementedError()
+        Thread {
+            arguments?.getInt(ARG_ITEM_ID)?.let {
+                uid = it
+                val book = myApplication.getBooksInteractor().getBookById(uid)
+                initUI(book!!)
+            }
+        }.start()
     }
 
-    // TODO: Init UI with book details
+    // inicializamos el UI
     private fun initUI(book: Book) {
-        throw NotImplementedError()
+        myActivity.title = book.title
+        textViewAuthor.text = book.author
+        textViewDate.text = book.publicationDate
+        textViewDescription.text = book.description
+        myActivity.runOnUiThread {
+            Picasso.get().load(book.urlImage).into(imageViewAppBar)
+            Picasso.get().load(book.urlImage).into(imageViewBook)
+        }
+        fab.setOnClickListener {
+            //shareContent(book)
+        }
     }
 
-    // TODO: Share Book Title and Image URL
+    // compartir el libro con otras aplicaciones
     private fun shareContent(book: Book) {
         throw NotImplementedError()
     }
