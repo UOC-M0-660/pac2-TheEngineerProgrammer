@@ -1,5 +1,6 @@
 package edu.uoc.pac2.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -62,13 +63,17 @@ class BookDetailFragment : Fragment() {
             Picasso.get().load(book.urlImage).into(imageViewBook)
         }
         fab.setOnClickListener {
-            //shareContent(book)
+            shareContent(book)
         }
     }
 
     // compartir el libro con otras aplicaciones
     private fun shareContent(book: Book) {
-        throw NotImplementedError()
+        Intent(Intent.ACTION_SEND).run {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "Title: ${book.title}, imageUrl: ${book.urlImage}")
+            startActivity(Intent.createChooser(this, getString(R.string.share_with)))
+        }
     }
 
     companion object {
