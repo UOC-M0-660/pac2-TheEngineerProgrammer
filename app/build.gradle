@@ -55,5 +55,6 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.5"
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
-    // Other Libraries
+    // Admob
+    implementation 'com.google.android.gms:play-services-ads:19.4.0'
 }
