@@ -47,11 +47,13 @@ class BookDetailFragment : Fragment() {
             arguments?.getInt(ARG_ITEM_ID)?.let {
                 uid = it
                 val book = myApplication.getBooksInteractor().getBookById(uid)
-                if (book != null){
-                    initUI(book)
-                }else{//He añadido esto para pasar el Ex5Test
-                    fab.setOnClickListener {
-                        shareContent(null)
+                myActivity.runOnUiThread {
+                    if (book != null){
+                        initUI(book)
+                    }else{//He añadido esto para pasar el Ex5Test
+                        fab.setOnClickListener {
+                            shareContent(null)
+                        }
                     }
                 }
             }
@@ -64,10 +66,8 @@ class BookDetailFragment : Fragment() {
         textViewAuthor.text = book.author
         textViewDate.text = book.publicationDate
         textViewDescription.text = book.description
-        myActivity.runOnUiThread {
-            Picasso.get().load(book.urlImage).into(imageViewAppBar)
-            Picasso.get().load(book.urlImage).into(imageViewBook)
-        }
+        Picasso.get().load(book.urlImage).into(imageViewAppBar)
+        Picasso.get().load(book.urlImage).into(imageViewBook)
         fab.setOnClickListener {
             shareContent(book)
         }
