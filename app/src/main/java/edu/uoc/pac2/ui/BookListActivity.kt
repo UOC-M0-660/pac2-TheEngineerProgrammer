@@ -58,6 +58,7 @@ class BookListActivity : AppCompatActivity() {
     //Recordar reemplazar el adUnitId del layout cuando lanzes la aplicación
     private fun loadAdMob(){
         MobileAds.initialize(this) {}
+        //ya no se necesita el addTestDevice según la documentación, lo hace automaticamente.
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }

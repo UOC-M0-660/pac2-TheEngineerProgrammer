@@ -19,7 +19,7 @@ class BooksListAdapter(private var books: List<Book>) : RecyclerView.Adapter<Boo
 
     private val evenViewType = 0
     private val oddViewType = 1
-    private lateinit var context: Context
+    //private lateinit var context: Context
 
     private fun getBook(position: Int): Book {
         return books[position]
@@ -41,7 +41,7 @@ class BooksListAdapter(private var books: List<Book>) : RecyclerView.Adapter<Boo
 
     // Creates View Holder for re-use
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        context = parent.context
+        //context = parent.context
         val view: View = when (viewType) {
             evenViewType -> {
                 LayoutInflater.from(parent.context)
@@ -63,6 +63,8 @@ class BooksListAdapter(private var books: List<Book>) : RecyclerView.Adapter<Boo
         val book = getBook(position)
         holder.titleView.text = book.title
         holder.authorView.text = book.author
+        //Al final lo he resuelto de esta manera:
+        val context = holder.view.context
 
         holder.view.setOnClickListener {
             val i = Intent(context, BookDetailActivity::class.java)

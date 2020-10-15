@@ -6,7 +6,7 @@
     android:name="edu.uoc.pac1.BookListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="@dimen/margin_m"
+    android:layout_marginRight="@dimen/margin_m"
     tools:context="edu.uoc.pac2.ui.BookListActivity"
     tools:listitem="@layout/row_book_list_content_even" />

@@ -17,15 +17,12 @@ class BooksInteractor(private val bookDao: BookDao) {
         return bookDao.getAllBooks()
     }
 
-    // He añadido que en caso de que ya existe el libro, lo va a actualizar en vez de insertar
+    // No veo nada que cambiar
     fun saveBook(book: Book) {
-        try {
-            bookDao.saveBook(book)
-        }catch (e: SQLiteConstraintException){
-            bookDao.updateBook(book)
-        }
+        bookDao.saveBook(book)
     }
 
+    // No veo nada que cambiar
     fun saveBooks(books: List<Book>) {
         books.forEach { saveBook(it) }
     }
