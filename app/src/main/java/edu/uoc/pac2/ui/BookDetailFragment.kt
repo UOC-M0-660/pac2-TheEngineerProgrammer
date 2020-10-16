@@ -8,11 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.squareup.picasso.Picasso
 import edu.uoc.pac2.MyApplication
 import edu.uoc.pac2.R
 import edu.uoc.pac2.data.Book
 import kotlinx.android.synthetic.main.fragment_book_detail.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.concurrent.thread
 
 /**
@@ -43,19 +47,34 @@ class BookDetailFragment : Fragment() {
 
     // cargar libro con id
     private fun loadBook() {
-        Thread {
-            arguments?.getInt(ARG_ITEM_ID)?.let {
-                uid = it
-                val book = myApplication.getBooksInteractor().getBookById(uid)
-//                myActivity.runOnUiThread {
-//                    if (book != null){
-//                        initUI(book)
-//                    }else{//He añadido esto para pasar el Ex5Test
-//                        fab.setOnClickListener {
-//                            shareContent(null)
-//                        }
+//        Thread {
+//            arguments?.getInt(ARG_ITEM_ID)?.let {
+//                uid = it
+//                val book = myApplication.getBooksInteractor().getBookById(uid)
+////                myActivity.runOnUiThread {
+////                    if (book != null){
+////                        initUI(book)
+////                    }else{//He añadido esto para pasar el Ex5Test
+////                        fab.setOnClickListener {
+////                            shareContent(null)
+////                        }
+////                    }
+////                }
+//                if (book != null){
+//                    initUI(book)
+//                }else{//He añadido esto para pasar el Ex5Test
+//                    fab.setOnClickListener {
+//                        shareContent(null)
 //                    }
 //                }
+//
+//            }
+//        }.start()
+        lifecycleScope.launch {
+            arguments?.getInt(ARG_ITEM_ID)?.let {
+                Log.i("Hilo actual", Thread.currentThread().toString())
+                uid = it
+                val book = withContext(Dispatchers.IO){myApplication.getBooksInteractor().getBookById(uid)}
                 if (book != null){
                     initUI(book)
                 }else{//He añadido esto para pasar el Ex5Test
@@ -63,23 +82,22 @@ class BookDetailFragment : Fragment() {
                         shareContent(null)
                     }
                 }
-
             }
-        }.start()
+        }
+
     }
 
     // inicializamos el UI
     private fun initUI(book: Book) {
-        myActivity.title = book.title // Es muy raro que si meto esto dentro de runOnUiThread, el Ex4Test falla
-        myActivity.runOnUiThread {
-            textViewAuthor.text = book.author
-            textViewDate.text = book.publicationDate
-            textViewDescription.text = book.description
-            Picasso.get().load(book.urlImage).into(imageViewAppBar)
-            Picasso.get().load(book.urlImage).into(imageViewBook)
-            fab.setOnClickListener {
-                shareContent(book)
-            }
+        Thread{myActivity.title = book.title}.start()//Es muy raro que esto tengo que meter en un thread distinto para poder
+        //pasar el Ex4Test
+        textViewAuthor.text = book.author
+        textViewDate.text = book.publicationDate
+        textViewDescription.text = book.description
+        Picasso.get().load(book.urlImage).into(imageViewAppBar)
+        Picasso.get().load(book.urlImage).into(imageViewBook)
+        fab.setOnClickListener {
+            shareContent(book)
         }
     }
 

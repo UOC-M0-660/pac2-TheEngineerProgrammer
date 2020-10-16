@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
@@ -22,6 +23,8 @@ import edu.uoc.pac2.data.BooksInteractor
 import edu.uoc.pac2.data.FirestoreBookData
 import kotlinx.android.synthetic.main.activity_book_list.*
 import kotlinx.android.synthetic.main.view_book_list.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * An activity representing a list of Books.
@@ -82,12 +85,12 @@ class BookListActivity : AppCompatActivity() {
     }
 
     private fun getBooks() {
-        Thread{
+        lifecycleScope.launch(Dispatchers.IO) {
             loadBooksFromLocalDb() //primero intentamos a cargar desde bd local
             if (myApplication.hasInternetConnection()){ //si hay conexion lo cargamos desde firestore y lo guardamos
                 getBooksFromFirestoreAndSaveToLocalDb()
             }
-        }.start()
+        }
     }
 
     //He elegido la primera opción, recoger los libros solo una vez, porque esta aplicación no es de tipo chat
@@ -108,9 +111,9 @@ class BookListActivity : AppCompatActivity() {
 
     // guardar libros al base de datos local
     private fun saveBooksToLocalDatabase(books: List<Book>) {
-        Thread{
+        lifecycleScope.launch(Dispatchers.IO) {
             myApplication.getBooksInteractor().saveBooks(books)
-        }.start()
+        }
     }
 
 
