@@ -1,12 +1,6 @@
 package edu.uoc.pac2.ui
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
@@ -14,12 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import edu.uoc.pac2.MyApplication
 import edu.uoc.pac2.R
 import edu.uoc.pac2.data.Book
-import edu.uoc.pac2.data.BooksInteractor
+import edu.uoc.pac2.data.BooksRoomManager
 import edu.uoc.pac2.data.FirestoreBookData
 import kotlinx.android.synthetic.main.activity_book_list.*
 import kotlinx.android.synthetic.main.view_book_list.*
@@ -33,7 +25,7 @@ class BookListActivity : AppCompatActivity() {
 
     private val TAG = "BookListActivity"
 
-    private val db = Firebase.firestore
+    //private val db = Firebase.firestore
 
     private lateinit var adapter: BooksListAdapter
 
@@ -96,23 +88,33 @@ class BookListActivity : AppCompatActivity() {
     //He elegido la primera opción, recoger los libros solo una vez, porque esta aplicación no es de tipo chat
     //No necesitamos estar continuamente escuchando para actualizar los cambios a tiempo real.
     private fun getBooksFromFirestoreAndSaveToLocalDb(){
-        db.collection(FirestoreBookData.COLLECTION_BOOKS).get().addOnSuccessListener {snapShot ->
-            val books = snapShot.documents.mapNotNull { it.toObject(Book::class.java) }
-            adapter.setBooks(books)
-            saveBooksToLocalDatabase(books) //guardamos al bd local
+//        db.collection(FirestoreBookData.COLLECTION_BOOKS).get().addOnSuccessListener {snapShot ->
+//            val books = snapShot.documents.mapNotNull { it.toObject(Book::class.java) }
+//            adapter.setBooks(books)
+//            saveBooksToLocalDatabase(books) //guardamos al bd local
+//        }
+        FirestoreBookData.getBooksFromFirestoreThenDo {
+            adapter.setBooks(it)
+            saveBooksToLocalDatabase(it)
         }
     }
 
     // cargar libros desde la base de datos local
     private fun loadBooksFromLocalDb() {
-        val books = myApplication.getBooksInteractor().getAllBooks()
-        adapter.setBooks(books)
+//        val books = BookRoomManager.getAllBooks()//myApplication.getBooksInteractor().getAllBooks()
+//        books?.let {
+//            adapter.setBooks(books)
+//        }
+        BooksRoomManager.getAllBooksThenDo {
+            adapter.setBooks(it)
+        }
     }
 
     // guardar libros al base de datos local
     private fun saveBooksToLocalDatabase(books: List<Book>) {
         lifecycleScope.launch(Dispatchers.IO) {
-            myApplication.getBooksInteractor().saveBooks(books)
+            BooksRoomManager.saveBooks(books)
+            //myApplication.getBooksInteractor().saveBooks(books)
         }
     }
 

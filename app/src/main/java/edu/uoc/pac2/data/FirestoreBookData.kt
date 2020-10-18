@@ -39,6 +39,16 @@ object FirestoreBookData {
         }
     }
 
+    //He decidido meter esta funcion aquí para tener más organizado el código
+    fun getBooksFromFirestoreThenDo(doAfter: (List<Book>)->Unit){
+        val db = Firebase.firestore
+        db.collection(COLLECTION_BOOKS).get().addOnSuccessListener {snapShot ->
+            val books = snapShot.documents.mapNotNull { it.toObject(Book::class.java) }
+            doAfter(books)
+        }
+    }
+
+
     private val booksData: List<HashMap<String, Any>> = listOf(
             hashMapOf(
                     "uid" to 1,

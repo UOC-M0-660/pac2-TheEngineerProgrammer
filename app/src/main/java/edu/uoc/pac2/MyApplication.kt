@@ -3,11 +3,7 @@ package edu.uoc.pac2
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.os.Build
-import androidx.room.Room
 import edu.uoc.pac2.data.*
 
 /**
@@ -15,19 +11,20 @@ import edu.uoc.pac2.data.*
  */
 class MyApplication : Application() {
 
-    private lateinit var booksInteractor: BooksInteractor
+    //private lateinit var booksInteractor: BooksInteractor
 
     override fun onCreate() {
         super.onCreate()
         // inicializando room
-        val db =  Room.databaseBuilder(applicationContext, ApplicationDatabase::class.java, "database-name").build()
+        //val db =  Room.databaseBuilder(applicationContext, ApplicationDatabase::class.java, "database-name").build()
         // inicializaondo booksInteractor
-        booksInteractor = BooksInteractor(db.bookDao())
+        //booksInteractor = BooksInteractor(db.bookDao())
+        BooksRoomManager.initiate(this)
     }
 
-    fun getBooksInteractor(): BooksInteractor {
-        return booksInteractor
-    }
+//    fun getBooksInteractor(): BooksInteractor {
+//        return booksInteractor
+//    }
 
     fun hasInternetConnection(): Boolean {
         var isConnected: Boolean = false

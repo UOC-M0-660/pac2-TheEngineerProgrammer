@@ -2,22 +2,15 @@ package edu.uoc.pac2.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.squareup.picasso.Picasso
-import edu.uoc.pac2.MyApplication
 import edu.uoc.pac2.R
 import edu.uoc.pac2.data.Book
+import edu.uoc.pac2.data.BooksRoomManager
 import kotlinx.android.synthetic.main.fragment_book_detail.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.concurrent.thread
 
 /**
  * A fragment representing a single Book detail screen.
@@ -25,7 +18,7 @@ import kotlin.concurrent.thread
  */
 class BookDetailFragment : Fragment() {
 
-    private val myApplication by lazy { activity!!.application as MyApplication}
+    //private val myApplication by lazy { activity!!.application as MyApplication}
     private val myActivity by lazy { activity!! as BookDetailActivity }
     private var uid = 0
 
@@ -70,11 +63,25 @@ class BookDetailFragment : Fragment() {
 //
 //            }
 //        }.start()
-        lifecycleScope.launch {
-            arguments?.getInt(ARG_ITEM_ID)?.let {
-                Log.i("Hilo actual", Thread.currentThread().toString())
-                uid = it
-                val book = withContext(Dispatchers.IO){myApplication.getBooksInteractor().getBookById(uid)}
+//        lifecycleScope.launch {
+//            arguments?.getInt(ARG_ITEM_ID)?.let {
+//                Log.i("Hilo actual", Thread.currentThread().toString())
+//                uid = it
+//                //val book = withContext(Dispatchers.IO){myApplication.getBooksInteractor().getBookById(uid)}
+//                val book = withContext(Dispatchers.IO){BookRoomManager.getBookById(uid)}
+//                if (book != null){
+//                    initUI(book)
+//                }else{//He añadido esto para pasar el Ex5Test
+//                    fab.setOnClickListener {
+//                        shareContent(null)
+//                    }
+//                }
+//            }
+//        }
+
+        arguments?.getInt(ARG_ITEM_ID)?.let {
+            uid = it
+            BooksRoomManager.getBookById(uid){ book ->
                 if (book != null){
                     initUI(book)
                 }else{//He añadido esto para pasar el Ex5Test
@@ -89,8 +96,7 @@ class BookDetailFragment : Fragment() {
 
     // inicializamos el UI
     private fun initUI(book: Book) {
-        Thread{myActivity.title = book.title}.start()//Es muy raro que esto tengo que meter en un thread distinto para poder
-        //pasar el Ex4Test
+        collapsingToolbarLayout.title = book.title
         textViewAuthor.text = book.author
         textViewDate.text = book.publicationDate
         textViewDescription.text = book.description

@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteConstraintException
  *
  * Created by alex on 03/07/2020.
  */
+
+//Esta clase ya no lo uso, ya tenemos el BookRoomManager
 class BooksInteractor(private val bookDao: BookDao) {
 
     // No veo nada que cambiar
