@@ -12,6 +12,9 @@ import edu.uoc.pac2.data.*
 class MyApplication : Application() {
 
     //private lateinit var booksInteractor: BooksInteractor
+    companion object{
+        lateinit var instance: MyApplication
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -19,7 +22,7 @@ class MyApplication : Application() {
         //val db =  Room.databaseBuilder(applicationContext, ApplicationDatabase::class.java, "database-name").build()
         // inicializaondo booksInteractor
         //booksInteractor = BooksInteractor(db.bookDao())
-        BooksRoomManager.initiate(this)
+        instance = this
     }
 
 //    fun getBooksInteractor(): BooksInteractor {
