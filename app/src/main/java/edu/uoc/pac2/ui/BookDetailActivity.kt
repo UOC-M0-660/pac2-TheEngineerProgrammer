@@ -1,7 +1,9 @@
 package edu.uoc.pac2.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import edu.uoc.pac2.R
 
@@ -32,16 +34,27 @@ class BookDetailActivity : AppCompatActivity() {
                     .add(R.id.frameLayout, fragment)
                     .commit()
         }
+
+
+
     }
 
-    // TODO: Override finish animation for actionbar back arrow
+    //boton flecha tiene por defecto id = android.R.id.home
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        if (item.itemId == android.R.id.home){
+            goBackToBookListActivity()
+        }
+        return true
     }
 
-    // TODO: Override finish animation for phone back button
+    //al presionar back
     override fun onBackPressed() {
-        super.onBackPressed()
+        goBackToBookListActivity()
+    }
+
+    private fun goBackToBookListActivity(){
+        finish()
+        overridePendingTransition(R.anim.translate_in_top, R.anim.translate_out_top)
     }
 
 }
