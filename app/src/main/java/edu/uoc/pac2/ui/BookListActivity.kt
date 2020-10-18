@@ -29,7 +29,7 @@ class BookListActivity : AppCompatActivity() {
 
     private lateinit var adapter: BooksListAdapter
 
-    private val myApplication by lazy { application as MyApplication }
+    //private val myApplication by lazy { application as MyApplication }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +79,7 @@ class BookListActivity : AppCompatActivity() {
     private fun getBooks() {
         lifecycleScope.launch(Dispatchers.IO) {
             loadBooksFromLocalDb() //primero intentamos a cargar desde bd local
-            if (myApplication.hasInternetConnection()){ //si hay conexion lo cargamos desde firestore y lo guardamos
+            if (MyApplication.instance.hasInternetConnection()){ //si hay conexion lo cargamos desde firestore y lo guardamos
                 getBooksFromFirestoreAndSaveToLocalDb()
             }
         }
