@@ -47,39 +47,29 @@ class BookDetailFragment : Fragment() {
             arguments?.getInt(ARG_ITEM_ID)?.let {
                 uid = it
                 val book = myApplication.getBooksInteractor().getBookById(uid)
-//                myActivity.runOnUiThread {
-//                    if (book != null){
-//                        initUI(book)
-//                    }else{//He añadido esto para pasar el Ex5Test
-//                        fab.setOnClickListener {
-//                            shareContent(null)
-//                        }
-//                    }
-//                }
-                if (book != null){
-                    initUI(book)
-                }else{//He añadido esto para pasar el Ex5Test
-                    fab.setOnClickListener {
-                        shareContent(null)
+                myActivity.runOnUiThread {
+                    if (book != null){
+                        initUI(book)
+                    }else{//He añadido esto para pasar el Ex5Test
+                        fab.setOnClickListener {
+                            shareContent(null)
+                        }
                     }
                 }
-
             }
         }.start()
     }
 
     // inicializamos el UI
     private fun initUI(book: Book) {
-        myActivity.title = book.title // Es muy raro que si meto esto dentro de runOnUiThread, el Ex4Test falla
-        myActivity.runOnUiThread {
-            textViewAuthor.text = book.author
-            textViewDate.text = book.publicationDate
-            textViewDescription.text = book.description
-            Picasso.get().load(book.urlImage).into(imageViewAppBar)
-            Picasso.get().load(book.urlImage).into(imageViewBook)
-            fab.setOnClickListener {
-                shareContent(book)
-            }
+        collapsingToolbarLayout.title = book.title
+        textViewAuthor.text = book.author
+        textViewDate.text = book.publicationDate
+        textViewDescription.text = book.description
+        Picasso.get().load(book.urlImage).into(imageViewAppBar)
+        Picasso.get().load(book.urlImage).into(imageViewBook)
+        fab.setOnClickListener {
+            shareContent(book)
         }
     }
 
