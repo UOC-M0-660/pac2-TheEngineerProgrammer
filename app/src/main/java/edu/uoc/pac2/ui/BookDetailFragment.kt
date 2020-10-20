@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.squareup.picasso.Picasso
 import edu.uoc.pac2.R
 import edu.uoc.pac2.data.Book
 import edu.uoc.pac2.data.BooksRoomManager
 import kotlinx.android.synthetic.main.fragment_book_detail.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A fragment representing a single Book detail screen.
@@ -81,7 +85,8 @@ class BookDetailFragment : Fragment() {
 
         arguments?.getInt(ARG_ITEM_ID)?.let {
             uid = it
-            BooksRoomManager.getBookById(uid){ book ->
+            lifecycleScope.launch {
+                val book = withContext(Dispatchers.IO){BooksRoomManager.getBookById(uid)}
                 if (book != null){
                     initUI(book)
                 }else{//He añadido esto para pasar el Ex5Test

@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_book_list.*
 import kotlinx.android.synthetic.main.view_book_list.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * An activity representing a list of Books.
@@ -29,7 +30,7 @@ class BookListActivity : AppCompatActivity() {
 
     private lateinit var adapter: BooksListAdapter
 
-    //private val myApplication by lazy { application as MyApplication }
+    private val myApplication by lazy { application as MyApplication }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +80,7 @@ class BookListActivity : AppCompatActivity() {
     private fun getBooks() {
         lifecycleScope.launch(Dispatchers.IO) {
             loadBooksFromLocalDb() //primero intentamos a cargar desde bd local
-            if (MyApplication.instance.hasInternetConnection()){ //si hay conexion lo cargamos desde firestore y lo guardamos
+            if (myApplication.hasInternetConnection()){ //si hay conexion lo cargamos desde firestore y lo guardamos
                 getBooksFromFirestoreAndSaveToLocalDb()
             }
         }
@@ -105,9 +106,14 @@ class BookListActivity : AppCompatActivity() {
 //        books?.let {
 //            adapter.setBooks(books)
 //        }
-        BooksRoomManager.getAllBooksThenDo {
-            adapter.setBooks(it)
+//        BooksRoomManager.getAllBooksThenDo {
+//            adapter.setBooks(it)
+//        }
+        lifecycleScope.launch {
+            val books = withContext(Dispatchers.IO){BooksRoomManager.getAllBooks()}
+            adapter.setBooks(books)
         }
+
     }
 
     // guardar libros al base de datos local

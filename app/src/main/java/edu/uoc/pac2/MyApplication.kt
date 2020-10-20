@@ -12,17 +12,15 @@ import edu.uoc.pac2.data.*
 class MyApplication : Application() {
 
     //private lateinit var booksInteractor: BooksInteractor
-    companion object{
-        lateinit var instance: MyApplication
-    }
-
     override fun onCreate() {
         super.onCreate()
         // inicializando room
         //val db =  Room.databaseBuilder(applicationContext, ApplicationDatabase::class.java, "database-name").build()
         // inicializaondo booksInteractor
         //booksInteractor = BooksInteractor(db.bookDao())
-        instance = this
+        BooksRoomManager.initiate(this) //he cambiado a esto,
+        //así cade vez que se recrea la aplicación nos va a actualizar el BooksRoomManager
+        //no se me ocurre de otra manera
     }
 
 //    fun getBooksInteractor(): BooksInteractor {
